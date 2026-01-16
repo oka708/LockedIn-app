@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-white min-h-screen p-6 max-w-md mx-auto border-x flex flex-col justify-center">
+    <a href="dashboard.html" class="absolute top-6 left-6 text-blue-600 text-2xl"><i class="fas fa-arrow-left"></i></a>
+    <div class="text-center mb-8"><i class="fas fa-lock text-5xl mb-2"></i><h1 class="text-2xl font-bold">Simpan Password</h1></div>
+    <div class="space-y-4">
+        <div><label class="block text-sm font-bold mb-1">Nama Aplikasi</label><input type="text" id="appName" class="w-full bg-gray-100 p-3 rounded-lg outline-none"></div>
+        <div><label class="block text-sm font-bold mb-1">Username / Email</label><input type="text" id="username" class="w-full bg-gray-100 p-3 rounded-lg outline-none"></div>
+        <div><label class="block text-sm font-bold mb-1">Password</label><div class="relative"><input type="password" id="passwordVal" class="w-full bg-gray-100 p-3 rounded-lg outline-none"><i class="fas fa-eye absolute right-4 top-4 text-gray-400 cursor-pointer" onclick="togglePass()"></i></div></div>
+        <button onclick="savePass()" class="w-full bg-blue-600 text-white p-3 rounded-lg font-bold mt-6">Simpan</button>
+    </div>
+    <script>
+        function togglePass() { const x = document.getElementById('passwordVal'); x.type = x.type === 'password' ? 'text' : 'password'; }
+        async function savePass() {
+            const userId = localStorage.getItem('userId');
+            const appName = document.getElementById('appName').value;
+            const username = document.getElementById('username').value;
+            const passwordValue = document.getElementById('passwordVal').value;
+            await fetch('http://localhost:3000/passwords', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userId, appName, username, passwordValue }) });
+            window.location.href = 'dashboard.html';
+        }
+    </script>
+</body>
+</html>

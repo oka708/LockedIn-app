@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-white min-h-screen relative p-6 max-w-md mx-auto border-x">
+    <div class="flex justify-between items-center mb-6">
+        <i class="fas fa-cog text-xl text-gray-600"></i>
+        <div class="flex items-center gap-2">
+            <h1 class="text-2xl font-bold">Daftar Password</h1>
+            <i class="fas fa-lock text-2xl"></i>
+        </div>
+        <a href="add.html" class="bg-blue-600 text-white p-2 rounded-lg w-10 h-10 flex items-center justify-center shadow-lg hover:bg-blue-700"><i class="fas fa-plus"></i></a>
+    </div>
+    <div class="bg-gray-100 p-3 rounded-lg mb-6 flex items-center gap-2">
+        <i class="fas fa-search text-gray-400"></i>
+        <input type="text" id="searchInput" placeholder="Search here..." class="bg-transparent w-full outline-none">
+    </div>
+    <div id="passwordList" class="space-y-4"></div>
+    <script>
+        const userId = localStorage.getItem('userId');
+        if(!userId) window.location.href = 'login.html';
+        async function loadPasswords() {
+            const res = await fetch(`http://localhost:3000/passwords/${userId}`);
+            const passwords = await res.json();
+            const list = document.getElementById('passwordList');
+            list.innerHTML = '';
+            passwords.forEach(p => {
+                list.innerHTML += `
+                <div class="bg-gray-50 p-4 rounded-lg flex justify-between items-center border hover:shadow-sm">
+                    <span class="font-bold text-gray-700">${p.appName}</span>
+                    <div class="flex items-center gap-3">
+                        <button onclick="deletePass('${p._id}')" class="text-red-500 hover:text-red-700"><i class="fas fa-trash"></i></button>
+                        <a href="edit.html?id=${p._id}" class="text-gray-400 hover:text-gray-600"><i class="fas fa-chevron-right"></i></a>
+                    </div>
+                </div>`;
+            });
+        }
+        async function deletePass(id) {
+            if(confirm('Yakin ingin menghapus?')) {
+                await fetch(`http://localhost:3000/passwords/${id}`, { method: 'DELETE' });
+                loadPasswords();
+            }
+        }
+        loadPasswords();
+    </script>
+</body>
+</html>
